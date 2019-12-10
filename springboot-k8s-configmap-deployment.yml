@@ -1,0 +1,41 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: springk8-service
+spec:
+  selector:
+    app: springboot-configmap-k8s
+  ports:
+  - protocol: TCP
+    port: 9000
+    nodePort: 30088
+  type: NodePort
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-configmap-k8s
+  labels:
+    app: springboot-configmap-k8s
+    role: backend
+    stage: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-configmap-k8s
+      version: v0.0.1
+  template:
+    metadata:
+      labels:
+        app: springboot-configmap-k8s
+        version: v0.0.1
+    spec:
+      containers:
+        - name: springboot-configmap-k8s
+          image: springbootconfig:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9000
